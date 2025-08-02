@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kuesioner Bertahap</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 text-gray-800 bg-gray-100">
+
+  <div class="w-full max-w-xl p-6 bg-white shadow-lg rounded-xl">
+    <h1 class="mb-4 text-2xl font-bold text-center">Kuesioner</h1>
+
+    <form id="questionnaire">
+      <div id="question-container" class="mb-6"></div>
+
+      <button type="button" id="nextBtn" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+        Next
+      </button>
+    </form>
+
+    <div id="result" class="hidden mt-6 text-lg font-semibold text-center"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "Kemampuan Anda adalah sesuatu yang sangat mendasar yang tidak banyak dapat Anda ubah lagi.",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Tidak peduli seberapapun tingkat kemampuan Anda saat ini, Anda bisa mengubahnya walaupun sedikit.",
+        answers: [
+          { label: "Sangat Setuju", point: 2 },
+          { label: "Setuju", point: 3 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Anda akan selalu dapat mengubah kemampuan Anda.",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Anda adalah seseorang yang unik, tidak banyak yang dapat dilakukan untuk mengubahnya.",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Anda akan selalu dapat mengubah diri Anda sendiri",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Kemampuan dalam bidang seni dan musik dapat dipelajari oleh siapapun.",
+        answers: [
+          { label: "Sangat Setuju", point: 2 },
+          { label: "Setuju", point: 3 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Hanya sedikit orang yang benar-benar mahir dalam olahraga, Anda harus membawa bakat ini sejak lahir.",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Matematika lebih mudah dipelajari oleh pria atau seseorang yang berada dalam lingkungan yang menyukainya",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Makin keras Anda mengerjakan sesuatu makin mahir Anda dalam hal ini",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Tidak peduli tipe apapun Anda saat ini, Anda akan selalu dapat mengubahnya",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Mencoba sesuatu yang baru akan sangat menyulitkan Anda sehingga Anda ingin menghindarinya.",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Sebagian orang baik dan pintar, sebagian lagi tidak. Tidak banyak yang dapat berubah.",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Saya sengat menghargai kritik dan saran dari siapapun juga terkait dengan kinerja saya saat ini.",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Saya kurang senang bila ada kritik dan saran dari orang lain.",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Semua orang yang tanpa cacat-otak atau cacat-lahir memiliki kemampuan yang sama dalam belajar",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Anda bisa mempelajari sesuatu yang baru, tapi Anda tidak bisa mengubah kemampuan Anda",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Anda dapat melakukan sesuatu secara berbeda, tapi sebenarnya Anda tetap tidak dapat mengubah kemampuan Anda",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+      {
+        text: "Semua orang pada dasarnya baik, tapi kadang-kadang membuat keputusan yang salah",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Alasan terpenting mengapa Anda mela-kukan pekerjaan Anda adalah keinginan untuk mempelajari sesuatu yang baru.",
+        answers: [
+          { label: "Sangat Setuju", point: 3 },
+          { label: "Setuju", point: 2 },
+          { label: "Tidak Setuju", point: 1 },
+          { label: "Sangat Tidak Setuju", point: 0 }
+        ]
+      },
+      {
+        text: "Orang yang benar-benar cerdas, tidak perlu bekerja keras.",
+        answers: [
+          { label: "Sangat Setuju", point: 0 },
+          { label: "Setuju", point: 1 },
+          { label: "Tidak Setuju", point: 2 },
+          { label: "Sangat Tidak Setuju", point: 3 }
+        ]
+      },
+    ];
+
+    let currentQuestion = 0;
+    let totalScore = 0;
+
+    const questionContainer = document.getElementById('question-container');
+    const nextBtn = document.getElementById('nextBtn');
+    const resultBox = document.getElementById('result');
+
+    function showQuestion(index) {
+      const q = questions[index];
+      const options = q.answers.map((ans, i) => `
+        <label class="block p-2 border rounded cursor-pointer hover:bg-gray-100">
+          <input type="radio" name="answer" value="${ans.point}" class="mr-2"> ${ans.label}
+        </label>
+      `).join("");
+
+      questionContainer.innerHTML = `
+        <p class="mb-4 font-medium">${index + 1}. ${q.text}</p>
+        ${options}
+      `;
+    }
+
+    function calculateCategory(score) {
+      if (score <= 20) return "Tetap";
+      if (score <= 33) return "Tetap Bertumbuh";
+      if (score <= 44) return "Bertumbuh Tetap";
+      return "Bertumbuh";
+    }
+
+    nextBtn.addEventListener('click', () => {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        alert("Silakan pilih salah satu jawaban terlebih dahulu.");
+        return;
+      }
+
+      totalScore += parseInt(selected.value);
+
+      currentQuestion++;
+      if (currentQuestion < questions.length) {
+        showQuestion(currentQuestion);
+      } else {
+        document.getElementById('questionnaire').classList.add('hidden');
+        resultBox.classList.remove('hidden');
+        resultBox.innerHTML = `Total Skor: ${totalScore}<br>Kategori: <span class="text-blue-600">${calculateCategory(totalScore)}</span>`;
+      }
+    });
+
+    // Tampilkan soal pertama saat halaman dimuat
+    showQuestion(currentQuestion);
+  </script>
+</body>
+</html>
