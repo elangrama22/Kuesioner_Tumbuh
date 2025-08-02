@@ -11,9 +11,16 @@
   <div class="w-full max-w-xl p-6 bg-white shadow-lg rounded-xl">
     <h1 class="mb-4 text-2xl font-bold text-center">Kuesioner Pemetaan Profil Pola Pikir</h1>
 
-    <form id="questionnaire">
-      <div id="question-container" class="mb-6"></div>
+    <div id="name-section">
+      <label class="block mb-2 font-medium">Masukkan Nama Anda:</label>
+      <input type="text" id="nameInput" class="w-full p-2 mb-4 border rounded" placeholder="Nama lengkap">
+      <button id="startBtn" class="w-full px-4 py-2 text-white bg-green-600 rounded hover:bg-green-700">
+        Mulai Kuesioner
+      </button>
+    </div>
 
+    <form id="questionnaire" class="hidden">
+      <div id="question-container" class="mb-6"></div>
       <button type="button" id="nextBtn" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
         Next
       </button>
@@ -208,10 +215,29 @@
 
     let currentQuestion = 0;
     let totalScore = 0;
+    let userName = '';
+
+    const nameSection = document.getElementById('name-section');
+    const nameInput = document.getElementById('nameInput');
+    const startBtn = document.getElementById('startBtn');
 
     const questionContainer = document.getElementById('question-container');
     const nextBtn = document.getElementById('nextBtn');
+    const questionnaire = document.getElementById('questionnaire');
     const resultBox = document.getElementById('result');
+
+    startBtn.addEventListener('click', () => {
+      const name = nameInput.value.trim();
+      if (!name) {
+        alert("Silakan isi nama terlebih dahulu.");
+        return;
+      }
+
+      userName = name;
+      nameSection.classList.add('hidden');
+      questionnaire.classList.remove('hidden');
+      showQuestion(currentQuestion);
+    });
 
     function showQuestion(index) {
       const q = questions[index];
@@ -234,6 +260,12 @@
       return "Bertumbuh";
     }
 
+    function getPointerPosition(score) {
+      const maxScore = 60;
+      const percentage = (score / maxScore) * 100;
+      return percentage;
+    }
+
     nextBtn.addEventListener('click', () => {
       const selected = document.querySelector('input[name="answer"]:checked');
       if (!selected) {
@@ -242,19 +274,41 @@
       }
 
       totalScore += parseInt(selected.value);
-
       currentQuestion++;
+
       if (currentQuestion < questions.length) {
         showQuestion(currentQuestion);
       } else {
-        document.getElementById('questionnaire').classList.add('hidden');
+        questionnaire.classList.add('hidden');
         resultBox.classList.remove('hidden');
-        resultBox.innerHTML = `Total Skor: ${totalScore}<br>Kategori: <span class="text-blue-600">${calculateCategory(totalScore)}</span>`;
+
+        const pointerLeft = getPointerPosition(totalScore);
+
+        resultBox.innerHTML = `
+            <p>Terima kasih, <span class="text-blue-700">${userName}</span>!</p>
+            <p>Total Skor: <strong>${totalScore}</strong></p>
+            <p>Kategori: <span class="text-blue-600">${calculateCategory(totalScore)}</span></p>
+
+            <div class="mt-6 mb-2 text-sm text-gray-600">Skala Kategori</div>
+
+            <div class="grid w-full h-6 grid-cols-4 mb-2 overflow-hidden bg-gray-200 rounded">
+                <div class="h-full text-xs leading-6 text-center text-white bg-red-400">Tetap</div>
+                <div class="h-full text-xs leading-6 text-center text-black bg-yellow-400">Tetap Bertumbuh</div>
+                <div class="h-full text-xs leading-6 text-center text-white bg-blue-300">Bertumbuh Tetap</div>
+                <div class="h-full text-xs leading-6 text-center text-white bg-green-400">Bertumbuh</div>
+            </div>
+
+
+            <div class="grid grid-cols-4 gap-2 text-sm text-center text-gray-600">
+                <div>0–20</div>
+                <div>21–33</div>
+                <div>34–44</div>
+                <div>45–60</div>
+            </div>
+            `;
+
       }
     });
-    
-    showQuestion(currentQuestion);
   </script>
 </body>
 </html>
-
