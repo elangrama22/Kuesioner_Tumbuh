@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Kuesioner Bertahap</title>
+  <title>Kuesioner P4</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="flex items-center justify-center min-h-screen p-4 text-gray-800 bg-gray-100">
 
   <div class="w-full max-w-xl p-6 bg-white shadow-lg rounded-xl">
-    <h1 class="mb-4 text-2xl font-bold text-center">Kuesioner</h1>
+    <h1 class="mb-4 text-2xl font-bold text-center">Kuesioner Pemetaan Profil Pola Pikir</h1>
 
     <form id="questionnaire">
       <div id="question-container" class="mb-6"></div>
@@ -252,9 +252,9 @@
         resultBox.innerHTML = `Total Skor: ${totalScore}<br>Kategori: <span class="text-blue-600">${calculateCategory(totalScore)}</span>`;
       }
     });
-
-    // Tampilkan soal pertama saat halaman dimuat
+    
     showQuestion(currentQuestion);
   </script>
 </body>
 </html>
+
