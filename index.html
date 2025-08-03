@@ -20,6 +20,7 @@
     </div>
 
     <form id="questionnaire" class="hidden">
+      <div id="timer" class="mb-4 text-right text-sm text-red-500 font-semibold"></div>
       <div id="question-container" class="mb-6"></div>
       <button type="button" id="nextBtn" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
         Next
@@ -216,6 +217,8 @@
     let currentQuestion = 0;
     let totalScore = 0;
     let userName = '';
+    let timerInterval;
+    let timeLeft = 30;
 
     const nameSection = document.getElementById('name-section');
     const nameInput = document.getElementById('nameInput');
@@ -225,6 +228,7 @@
     const nextBtn = document.getElementById('nextBtn');
     const questionnaire = document.getElementById('questionnaire');
     const resultBox = document.getElementById('result');
+    const timerBox = document.getElementById('timer');
 
     startBtn.addEventListener('click', () => {
       const name = nameInput.value.trim();
@@ -241,7 +245,7 @@
 
     function showQuestion(index) {
       const q = questions[index];
-      const options = q.answers.map((ans, i) => `
+      const options = q.answers.map((ans) => `
         <label class="block p-2 border rounded cursor-pointer hover:bg-gray-100">
           <input type="radio" name="answer" value="${ans.point}" class="mr-2"> ${ans.label}
         </label>
@@ -251,7 +255,90 @@
         <p class="mb-4 font-medium">${index + 1}. ${q.text}</p>
         ${options}
       `;
+
+      resetTimer();
+      startTimer();
     }
+
+    function startTimer() {
+      timeLeft = 30;
+      timerBox.textContent = `Sisa waktu: ${timeLeft} detik`;
+
+      timerInterval = setInterval(() => {
+        timeLeft--;
+        timerBox.textContent = `Sisa waktu: ${timeLeft} detik`;
+
+        if (timeLeft <= 0) {
+          clearInterval(timerInterval);
+          autoNextIfNoAnswer();
+        }
+      }, 1000);
+    }
+
+    function resetTimer() {
+      clearInterval(timerInterval);
+      timerBox.textContent = '';
+    }
+
+    function autoNextIfNoAnswer() {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        totalScore += 0;
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+          showQuestion(currentQuestion);
+        } else {
+          showResult();
+        }
+      }
+    }
+
+    function showResult() {
+      questionnaire.classList.add('hidden');
+      resultBox.classList.remove('hidden');
+
+      const pointerLeft = getPointerPosition(totalScore);
+
+      resultBox.innerHTML = `
+        <p>Terima kasih, <span class="text-blue-700">${userName}</span>!</p>
+        <p>Total Skor: <strong>${totalScore}</strong></p>
+        <p>Kategori: <span class="text-blue-600">${calculateCategory(totalScore)}</span></p>
+
+        <div class="mt-6 mb-2 text-sm text-gray-600">Skala Kategori</div>
+
+        <div class="grid w-full h-6 grid-cols-4 mb-2 overflow-hidden bg-gray-200 rounded">
+            <div class="h-full text-xs leading-6 text-center text-white bg-red-400">Tetap</div>
+            <div class="h-full text-xs leading-6 text-center text-black bg-yellow-400">Tetap Bertumbuh</div>
+            <div class="h-full text-xs leading-6 text-center text-white bg-blue-300">Bertumbuh Tetap</div>
+            <div class="h-full text-xs leading-6 text-center text-white bg-green-400">Bertumbuh</div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-2 text-sm text-center text-gray-600">
+            <div>0–20</div>
+            <div>21–33</div>
+            <div>34–44</div>
+            <div>45–60</div>
+        </div>
+      `;
+    }
+
+    nextBtn.addEventListener('click', () => {
+      const selected = document.querySelector('input[name="answer"]:checked');
+      if (!selected) {
+        alert("Silakan pilih salah satu jawaban terlebih dahulu.");
+        return;
+      }
+
+      resetTimer();
+      totalScore += parseInt(selected.value);
+      currentQuestion++;
+
+      if (currentQuestion < questions.length) {
+        showQuestion(currentQuestion);
+      } else {
+        showResult();
+      }
+    });
 
     function calculateCategory(score) {
       if (score <= 20) return "Tetap";
@@ -262,54 +349,8 @@
 
     function getPointerPosition(score) {
       const maxScore = 60;
-      const percentage = (score / maxScore) * 100;
-      return percentage;
+      return (score / maxScore) * 100;
     }
-
-    nextBtn.addEventListener('click', () => {
-      const selected = document.querySelector('input[name="answer"]:checked');
-      if (!selected) {
-        alert("Silakan pilih salah satu jawaban terlebih dahulu.");
-        return;
-      }
-
-      totalScore += parseInt(selected.value);
-      currentQuestion++;
-
-      if (currentQuestion < questions.length) {
-        showQuestion(currentQuestion);
-      } else {
-        questionnaire.classList.add('hidden');
-        resultBox.classList.remove('hidden');
-
-        const pointerLeft = getPointerPosition(totalScore);
-
-        resultBox.innerHTML = `
-            <p>Terima kasih, <span class="text-blue-700">${userName}</span>!</p>
-            <p>Total Skor: <strong>${totalScore}</strong></p>
-            <p>Kategori: <span class="text-blue-600">${calculateCategory(totalScore)}</span></p>
-
-            <div class="mt-6 mb-2 text-sm text-gray-600">Skala Kategori</div>
-
-            <div class="grid w-full h-6 grid-cols-4 mb-2 overflow-hidden bg-gray-200 rounded">
-                <div class="h-full text-xs leading-6 text-center text-white bg-red-400">Tetap</div>
-                <div class="h-full text-xs leading-6 text-center text-black bg-yellow-400">Tetap Bertumbuh</div>
-                <div class="h-full text-xs leading-6 text-center text-white bg-blue-300">Bertumbuh Tetap</div>
-                <div class="h-full text-xs leading-6 text-center text-white bg-green-400">Bertumbuh</div>
-            </div>
-
-
-            <div class="grid grid-cols-4 gap-2 text-sm text-center text-gray-600">
-                <div>0–20</div>
-                <div>21–33</div>
-                <div>34–44</div>
-                <div>45–60</div>
-            </div>
-            `;
-
-      }
-    });
   </script>
 </body>
 </html>
-
