@@ -6,7 +6,7 @@
   <title>Kuesioner P4</title>
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="flex items-center justify-center min-h-screen p-4 text-gray-800 bg-gray-100">
+<body class="flex flex-col items-center justify-center min-h-screen p-4 text-gray-800 bg-gray-100">
 
   <div class="w-full max-w-xl p-6 bg-white shadow-lg rounded-xl">
     <h1 class="mb-4 text-2xl font-bold text-center">Kuesioner Pemetaan Profil Pola Pikir</h1>
@@ -20,7 +20,7 @@
     </div>
 
     <form id="questionnaire" class="hidden">
-      <div id="timer" class="mb-4 text-right text-sm text-red-500 font-semibold"></div>
+      <div id="timer" class="mb-4 text-sm font-semibold text-right text-red-500"></div>
       <div id="question-container" class="mb-6"></div>
       <button type="button" id="nextBtn" class="w-full px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
         Next
@@ -229,6 +229,7 @@
     const questionnaire = document.getElementById('questionnaire');
     const resultBox = document.getElementById('result');
     const timerBox = document.getElementById('timer');
+    
 
     startBtn.addEventListener('click', () => {
       const name = nameInput.value.trim();
@@ -299,27 +300,31 @@
 
       const pointerLeft = getPointerPosition(totalScore);
 
+      const result = calculateCategory(totalScore);
+
       resultBox.innerHTML = `
         <p>Terima kasih, <span class="text-blue-700">${userName}</span>!</p>
         <p>Total Skor: <strong>${totalScore}</strong></p>
-        <p>Kategori: <span class="text-blue-600">${calculateCategory(totalScore)}</span></p>
+        <p>Kategori: <span class="text-blue-600">${result.label}</span></p>
+        <p class="mt-2 text-sm text-gray-700">${result.description}</p>
 
         <div class="mt-6 mb-2 text-sm text-gray-600">Skala Kategori</div>
 
         <div class="grid w-full h-6 grid-cols-4 mb-2 overflow-hidden bg-gray-200 rounded">
-            <div class="h-full text-xs leading-6 text-center text-white bg-red-400">Tetap</div>
-            <div class="h-full text-xs leading-6 text-center text-black bg-yellow-400">Tetap Bertumbuh</div>
-            <div class="h-full text-xs leading-6 text-center text-white bg-blue-300">Bertumbuh Tetap</div>
-            <div class="h-full text-xs leading-6 text-center text-white bg-green-400">Bertumbuh</div>
+          <div class="h-full text-xs leading-6 text-center text-white bg-red-400">Tetap</div>
+          <div class="h-full text-xs leading-6 text-center text-black bg-yellow-400">Tetap Bertumbuh</div>
+          <div class="h-full text-xs leading-6 text-center text-white bg-blue-300">Bertumbuh Tetap</div>
+          <div class="h-full text-xs leading-6 text-center text-white bg-green-400">Bertumbuh</div>
         </div>
 
         <div class="grid grid-cols-4 gap-2 text-sm text-center text-gray-600">
-            <div>0–20</div>
-            <div>21–33</div>
-            <div>34–44</div>
-            <div>45–60</div>
+          <div>0–20</div>
+          <div>21–33</div>
+          <div>34–44</div>
+          <div>45–60</div>
         </div>
       `;
+
     }
 
     nextBtn.addEventListener('click', () => {
@@ -341,16 +346,37 @@
     });
 
     function calculateCategory(score) {
-      if (score <= 20) return "Tetap";
-      if (score <= 33) return "Tetap Bertumbuh";
-      if (score <= 44) return "Bertumbuh Tetap";
-      return "Bertumbuh";
+      if (score <= 20) {
+        return {
+          label: "Tetap",
+          description: "Cenderung memiliki pola pikir tetap (fixed mindset). Percaya bahwa kemampuan tidak bisa berkembang; menghindari tantangan dan mudah menyerah."
+        };
+      } else if (score <= 33) {
+        return {
+          label: "Tetap Bertumbuh",
+          description: "Mayoritas pola pikir tetap, namun mulai terbuka untuk bertumbuh. Kadang menerima tantangan, tapi masih sering ragu dengan perkembangan diri."
+        };
+      } else if (score <= 44) {
+        return {
+          label: "Bertumbuh Tetap",
+          description: "Mayoritas pola pikir bertumbuh, dengan sedikit pengaruh tetap. Umumnya percaya kemampuan bisa ditingkatkan, namun kadang masih terjebak dalam pola pikir lama."
+        };
+      } else {
+        return {
+          label: "Bertumbuh",
+          description: "Sepenuhnya berpola pikir berkembang (growth mindset). Yakin bahwa usaha, belajar dari kesalahan, dan ketekunan akan meningkatkan kemampuan secara nyata."
+        };
+      }
     }
+
 
     function getPointerPosition(score) {
       const maxScore = 60;
       return (score / maxScore) * 100;
     }
   </script>
+  <footer class="mt-8 text-sm text-center text-gray-300">
+    <p>@romdon_setiyo_u | @elangrama22</p>
+  </footer>
 </body>
 </html>
